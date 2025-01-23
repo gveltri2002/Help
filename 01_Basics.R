@@ -5,23 +5,31 @@
 # === === === === === === === === === === === === === === === === === ===
 
 ### RESOURCES ###
-?_______ #allows you to get information about what a command does
+# ?_______ #allows you to get information about what a command does
 
 # Colors for R: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
 
 # Graphing Info: https://r-graph-gallery.com/
 
+# R for Data Science: https://r4ds.hadley.nz/
 
 
-### GETTING STARTED ###
+#### GETTING STARTED ####
 
 # Working with packages
 install.packages() #allows you to install a pacakge permanently
 library() #allows you to load up package
 
+# Importing Data
+getwd() #tells you working directory
+df <- read.csv(file.choose(),header = T) 
+sleep <- read.csv(here("data", "sleep_score.csv")) # you can also use the here package which allows you to easily navigate through the directory tree
+
+#### end ####
+
 # === === === === === === === === === === === === === === === === === ===
 
-### PREPPING DATA ###
+#### PREPPING DATA ####
 # Importing Data
 df <- read.csv(file.choose(),header = T)
 
@@ -38,9 +46,11 @@ my_data$variable #adding a $ extracts one variable to look at
 NAME <- subset(df, variable header == name of variable)
 EX <- subset(Intein_df, Pglo_.1or.0 == 1)
 
+#### end ####
+
 # === === === === === === === === === === === === === === === === === ===
 
-### MAKING GRAPHS ###
+#### MAKING GRAPHS ####
 # Histogram: col = color
 hist(DATA$Variable on X-axis, col = "COLOR")
 
@@ -50,9 +60,11 @@ plot(DATA$X, DATA$y, pch = 19)
 # Displaying Graphs
 par(mfrow=c(2,1)) #display multiple graphs at the same time (# rows, #column)
 
+#### end ####
+
 # === === === === === === === === === === === === === === === === === ===
 
-### MANIPULATING DATA ###
+#### MANIPULATING DATA ####
 str() #shows the structure of data AKA what types of data do you have
 friends$height <- as.factor(friends$height) #changes the variable height within data set friends to a factor
 
@@ -62,9 +74,11 @@ friends$height <- factor(friends$height,
 
 Combined_Groups <- data.frame(cbind(Group1, Group2, Group3)) #combine groups into one
 
+#### end ####
+
 # === === === === === === === === === === === === === === === === === ===
 
-### CALCULATING MEANS ###
+#### CALCULATING MEANS ####
 #Example 1
 data(iris)
 aggregate(x= iris$Sepal.Length, by = list(iris$Species), FUN = mean)
@@ -79,5 +93,7 @@ iris %>%                                        # Specify data frame
 # Example 3
 library(Rmisc)
 summarySE(iris, measurevar="Sepal.Length", groupvars=c("Species"))
+
+#### end ####
 
 # === === === === === === === === === === === === === === === === === ===
