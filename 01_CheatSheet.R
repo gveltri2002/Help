@@ -4,6 +4,13 @@
 # Goal: Work though R Programing 101 hour-long R tutorial for beginners
 # === === === === === === === === === === === === === === === === === ===
 
+### RESOURCES ###
+# Colors for R: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+
+# Graphing Info: https://r-graph-gallery.com/
+
+# R for Data Science: https://r4ds.hadley.nz/
+
 # Useful Packages
 library(tidyverse)
 library(ggplot2)
@@ -76,7 +83,7 @@ starwars %>% # Pipe Operator
 view(msleep)
 
 glimpse(msleep) #overview of data: names, types of variable
-
+xz
 head(msleep) #first 6 rows
 
 class(msleep$name) #what type of data

@@ -1,0 +1,552 @@
+---
+title: "R Cheat Sheet"
+output: 
+  html_document:
+    toc: true
+    toc_depth: 3
+    toc_float: true
+    theme: readable
+    highlight: tango
+    fig_width: 6
+    fig_height: 4
+date: "2025-02-03"
+---
+```{r include=FALSE}
+library(tidyverse)
+library(gapminder)
+```
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+This is a document meant to serve as resource for coding with R. It combines my knowledge so far and is intended to remind me of the basics as I am learning and getting more familiar with R. I will contiue to add to this over time. Enjoy!
+
+<br>
+
+#### Resources
+  Colors for R: http://www.stat.columbia.edu/~tzheng/files/Rcolor.pdf
+
+  Graphing Info: https://r-graph-gallery.com/
+
+  R for Data Science: https://r4ds.hadley.nz/
+
+<br>
+
+<br>
+
+## 1. Introduction
+### Installing Packages
+
+```{r eval = F}
+install.packages("tidyverse")
+library(tidyverse)
+```
+
+<br>
+
+### Uploading Data
+Uploading data requires you to understand your working directory. The package **here** is very helpful for easily navigating directory trees
+```{r eval = FALSE}
+getwd() #tells you working directory
+```
+
+<br>
+
+Once you know your working directory you can choose and import your data:
+```{r eval = FALSE}
+df <- read.csv(here("data", "sleep_score.csv")) # you can also use the here package which allows you to easily navigate through the directory tree
+```
+
+<br>
+
+R has a bunch of built in data to work with. To see what data sets are available run: 
+```{r eval = FALSE}
+data()
+```
+
+<br>
+
+### Variables and Functions
+
+Using R involves assigning variables and is done with the <-
+```{r}
+a <- 5
+b <- 6
+
+ages <- c(5,6)
+names <- c("Gabe", "Colin")
+friends <- data.frame(names, ages)
+```
+
+<br>
+
+To look at the data/variables you create use the view command, str will give you structure:
+```{r}
+View(friends)
+str(friends) #gives you structure
+```
+
+<br>
+
+You can also look at specific parts of data such as individual variables or individual rows and columns
+```{r echo = T, results = 'hide'}
+friends$ages # variables
+friends [1,1] #rows, columns
+friends [1,]
+friends [,1]
+```
+
+<br>
+
+## 2. Tidyverse
+Tidyverse in an amazing package used to write code that is more efficient and concise. Tidyverse relies on the pipe opperator which basically means "and then"
+
+**Pipe Operator = %>%  (shift + CNTL + m), basically means and then**
+
+Here is an example of how to use tidverse to filter and plot a dataset:
+```{r}
+starwars %>%
+  filter(height > 150 & mass <200) %>% # filtering
+  mutate(height_in_meters = height/100) %>% # mutate = change, making a new variable here
+  select(height_in_meters, mass) %>% # what variables to work with
+  arrange(mass) %>% # how to arrange (can use - to invert it)
+  plot()
+```
+
+<br>
+
+## 3. Explore
+
+### Data structures and types of variables
+
+There are numerous commands that are useful for looking at and viewing data. Here I will provide them and a breift description of what they do:
+
+|   **view**(msleep) => view the whole df
+|   **glimpse**(msleep) => provides an overview of the df overview of data: names, types of variable
+|   **head**(msleep) => shows only the first 6 rows
+|   **class**(msleep$name) => shows the type of data
+|   **length**(msleep$name) => tells you how many observations
+|   **names**(msleep) => gives a list of the names of the variables in a df
+|   **unique**(msleep$vore) => shows the unique objects in variable
+
+<br>
+
+### Dealing with missing data
+Here is a line of code that is good for seeing missing data => **!** inverts data, **complete.cases** gives list of which there is no missing data 
+```{r eval = F}
+missing <- !complete.cases(msleep)
+msleep[missing,] #list of rows with missing data
+```
+
+<br>
+
+## 4. Clean
+### Select variables
+Variables can be selected by using varible names, column numbers, or by condition:
+```{r eval = F}
+starwars %>% 
+  select(name, height, mass)
+
+starwars %>% 
+  select(1:3)
+
+starwars %>% 
+  select(ends_with("color")) # selects all variables that end with "color"
+```
+
+<br>
+
+### Changing varibale order 
+The select command can also be used to reorder a dataset
+```{r eval = F}
+starwars %>% 
+  select(name, mass, height, everything())
+```
+
+<br>
+ 
+### Changing variable name
+Varaibles can be renamed using **rename**, make sure to put the new name FIRST
+```{r eval = F}
+starwars %>% 
+  rename("characters" = "name") %>%  #new name first
+  head()
+```
+
+<br>
+
+### Changing variable type
+Variable type can be changed using **mutate**
+```{r eval = F}
+starwars %>% 
+  mutate(hair_color = as.character(hair_color)) %>% 
+  glimpse()
+```
+
+<br>
+
+### Changing factor levels
+Factor levels are used to order categorical variables in useful ways. For example with looking at month data, months wil by default be ordered alphabetically. To change this you can order it using the **mutate** command. See how this is done using sex data:
+```{r}
+df <- starwars
+df$sex <- as.factor(df$sex)
+levels(df$sex)
+
+df<- df %>% 
+  mutate(sex = factor(sex,
+                      levels = c("male", "female","hermaphroditic", "none"
+                                 )))
+levels(df$sex)
+```
+
+<br>
+
+### Filter rows
+Filtering rows can easily be done with tidyverse
+```{r eval = F}
+starwars %>% 
+  select(mass, sex) %>% 
+  filter(mass < 55 &
+            sex == "male")
+```
+
+<br>
+
+### Recode data
+You can easily change the way a variable is coded to fit a new format using **mutate**
+```{r eval = F}
+starwars %>% 
+  select(sex) %>% 
+  mutate(sex = recode(sex,
+                      "male" = "man",
+                      "female" = "woman")) #Change male and female
+```
+
+<br>
+
+### Dealing with missing data
+When working with dataset with missing data you can run into issues:
+```{r}
+mean(starwars$height) #NA bc of missing data
+
+```
+
+<br>
+
+To fix this you can remove NA/missing data from calculations:
+```{r}
+mean(starwars$height, na.rm = T) # NA remove = True
+```
+<br>
+
+
+### Dealing with duplicates
+
+Duplicates can also pose issues. By using **distinct()** you can get a df that does not have duplicates
+```{r}
+Names <- c("Peter", "John", "Andrew", "Peter")
+Age <- c(22, 33, 44, 22)
+friends <- data.frame(Names, Age)
+friends
+
+friends %>% 
+  distinct() #gives you a data frame that removes duplicates
+```
+
+<br>
+
+## 5. Manipulate
+### Create or change a variable (mutate)
+Earlier we saw how **mutate** can change a variable. One example is changing height to be displayed in m instead of cm:
+```{r eval = F}
+starwars %>% 
+  mutate(height_m = height/100) %>% 
+  select(name, height, height_m)
+```
+
+<br>
+
+### Conditional change (if_else)
+Using **if_else** we can change how a variable is displayed such as createing a categorical variable from a discrete:
+```{r eval = F}
+starwars %>% 
+  mutate(height_m = height/100) %>% 
+  select(name, height, height_m) %>% 
+  mutate(tallness =
+           if_else(height_m < 1, "short", "tall")) #condition, if met, else
+```
+
+<br>
+
+### Reshape data with pivot wider/longer
+Sometimes the data we are using is not in the format we want it to be (short vs. long). Take the gapminder data for example:
+```{r include=FALSE}
+library(gapminder) #great dataset
+view(gapminder) #rightnow in a long format
+
+data <- select(gapminder, country, year, lifeExp) #same thing as below
+```
+
+```{r}
+head(data)
+```
+
+<br>
+
+This data is in long format where each country is represented multiple times in multiple rows. What we can do is using the **pivot_wider** function to change the data. The code below is pulling from the "year" column to make new headers for each year, THEN it is filling those with the values for "lifeExp"
+```{r}
+wide_data <- data %>% 
+  pivot_wider(names_from = year, values_from = lifeExp)
+head(wide_data)
+```
+
+<br>
+
+This code uses the **pivot_longer** function to reverse what was done
+```{r}
+long_data <- wide_data %>% 
+  pivot_longer(2:13,
+               names_to = "year",
+               values_to = "lifeExp")
+view(long_data)
+```
+
+<br>
+
+## 6. Describe
+### Summary stats
+Summary statistics can be individually generated, generated all at once, or generates for multiple varibles using a few simple commands:
+```{r eval = F}
+mean(msleep$awake)
+summary(msleep$awake)
+
+msleep %>% 
+  select(awake, sleep_total) %>% 
+  summary()
+```
+
+<br>
+
+### Summarize your data
+Tidyverse also allows you to easily maniplulate and summarize your data, see the example below:
+```{r eval = F}
+msleep %>%  # select your data
+  drop_na(vore) %>% #remove missing values
+  group_by(vore) %>% #group by type => "vore"
+  summarize(Lower = min(sleep_total), #create variable headings = function(variable you want value)
+            Average = mean(sleep_total),
+            Upper = max(sleep_total),
+            Difference = max(sleep_total)-min(sleep_total)) %>% 
+  arrange(Average) %>% #put in order by "average" value
+  View()
+```
+
+<br>
+
+### Create tables
+Tables can be useful ways of displaying data. Tables can be simple:
+```{r}
+table(msleep$vore) #gives us a count of occurrences of variable
+```
+
+<br>
+
+Or more complex
+```{r}
+msleep %>% 
+  select(vore, order) %>% 
+  filter(order %in% c("Rodentia", "Primates")) %>% #saying if in the order column there is ANY of the following variables, include them
+  table()
+```
+
+<br>
+
+## 7. Visualize
+
+### The grammar of graphics
+In order to make graphs we need to understand what we are talking about
+
+    Data => what data are you using
+    Mapping => using aesthetics (x and y axis, color, shape, size, etc.)
+    Geometry => line, bar chart, histograms, etc.
+<br>
+
+##### Here I provide code to different graph types. The code gets increasily complex and can be used to develop your own figures:
+
+<br>
+
+### Bar charts
+Bar charts are used to display categorical data:
+```{r}
+ggplot(data = starwars,
+       mapping = aes(x = gender)) +
+  geom_bar()
+```
+
+<br>
+
+### Histograms 
+```{r message=FALSE, warning=FALSE}
+starwars %>% #piping data in allows you to do stuff with it BEFORE it gets to the graphic
+  drop_na(height) %>% #such as filter out missing data
+  ggplot(aes(x = height)) + #autofills in starwars for first argument = data
+  geom_histogram()
+```
+
+<br>
+
+### Box plots
+Boxplots display distributions of data:
+```{r}
+starwars %>% 
+  drop_na(height) %>% 
+  ggplot(aes(x = height)) +
+  geom_boxplot(fill = "steelblue") +
+  theme_bw() +
+  labs(title = "Boxplot of Height",
+       x = "Height of Characters")
+```
+
+<br>
+
+### Density plots
+Density plots show how data is distributed over a contiunous interval
+```{r}
+starwars %>% 
+  drop_na(height) %>% 
+  filter(sex %in% c("male", "female")) %>% 
+  ggplot(aes(x = height,
+             color = sex,
+             fill = sex)) +
+  geom_density(alpha = 0.2) + #darkness of fill
+  theme_bw()
+```
+
+<br>
+
+### Scatter plots
+Scatter plots show the relationship between two variables
+```{r}
+starwars %>% 
+  filter(mass < 200) %>% 
+  ggplot(aes(x = height,
+             y = mass,
+             color = sex)) +
+  geom_point(size = 5, alpha = 0.5) +
+  theme_minimal() +
+  labs(title = "Height and Mass by Sex")
+```
+
+<br>
+
+### Smoothed model
+Smoothed model graphs elimate noise from scatter plots
+```{r message=FALSE, warning=FALSE}
+starwars %>% 
+  filter(mass < 200) %>% 
+  ggplot(aes(x = height, y = mass, color = sex)) +
+  geom_point(size = 3, alpha = 0.8) +
+  geom_smooth()+ #draw a smooth linear model over points, 95% standard error
+  facet_wrap(~sex)+ #look at data in different boxes based on sex
+  theme_bw() +
+  labs(title = "Height and Mass by Sex")
+```
+
+<br>
+
+## 8. Analyze
+##### The following are examples of code used to run hypothsis tests
+
+<br>
+
+### T-test
+T-tests are used for comparing means of 2 groups
+
+
+This code is running a test to determine if there is a difference in mean life expectancy between Africa and Europe:
+```{r}
+gapminder %>% 
+  filter(continent %in% c("Africa", "Europe")) %>% 
+  t.test(lifeExp ~ continent, data = ., # the data = . tells pipe operator to put data here
+         altrnative = "two.sided", # these are default so technically don't need to be included
+         paired = FALSE)
+```
+
+<br>
+
+### ANOVA
+AVONAs are used for comparing means of 3+ groups
+
+
+This code now compares 3 continents:
+```{R}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% c("Americas", "Europe", "Asia")) %>% 
+  aov(lifeExp ~ continent, data = .) %>% #aov = anova test
+  summary()
+```
+<br>
+
+The results from this test show a significnat difference. However, if we want a p value for each pairing we need to run this code
+```{R}
+gapminder %>% 
+  filter(year == 2007) %>% 
+  filter(continent %in% c("Americas", "Europe", "Asia")) %>% 
+  aov(lifeExp ~ continent, data = .) %>% #aov = anova test
+  TukeyHSD()  #lets us look at p-vlaue for each pairing
+```
+<br>
+
+### Chi Squared goodness of fit test
+This test is used to comparing categorical data
+
+
+This code is running a test to determine if there an equal proportion of flowers of each size
+```{R include=FALSE}
+head(iris) 
+
+flowers <- iris %>% 
+  mutate(size = cut(Sepal.Length, # break variable into 3 intervals
+                    breaks = 3,
+                    labels = c("Small", "Medium", "Large"))) %>% 
+  select(Species, size) %>% 
+  view()
+```
+```{R}
+flowers %>% 
+  select(size) %>% 
+  table() %>% 
+  chisq.test()
+```
+The P-value = 6.673e-07 => this means we reject null, there is a significant difference 
+
+<br>
+
+### Chi Squared test of independence
+This test is asking the question, are size and species independent
+```{R}
+flowers %>%  # includes size and species data
+  table() %>%
+  chisq.test()
+```
+The P-value < 2.2e-16 => this means we reject null, significant, categories are linked
+
+<br>
+
+### Linear model
+This test is looking at the relationship bwtween stopping distance and speed of car
+```{R}
+cars %>% 
+  lm(dist ~ speed, data = .) %>% #dependent as function of indepedent variable
+  summary()
+```
+The variables to pay attention to are: Y-intercept, Slope, p value, R2
+
+<br>
+<br>
+<br>
+
+
