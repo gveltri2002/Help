@@ -31,6 +31,10 @@ This is a document meant to serve as resource for coding with R. It combines my 
   Graphing Info: https://r-graph-gallery.com/
 
   R for Data Science: https://r4ds.hadley.nz/
+  
+  The ggplot2 Book: https://ggplot2-book.org/
+  
+  **Option + Shift + K** => opens up keyboard shorcuts
 
 <br>
 
@@ -71,6 +75,9 @@ data()
 ### Variables and Functions
 
 Using R involves assigning variables and is done with the <-
+
+**<- can be quickly typed using: Opt. + - 
+
 ```{r}
 a <- 5
 b <- 6
@@ -393,6 +400,15 @@ starwars %>% #piping data in allows you to do stuff with it BEFORE it gets to th
   drop_na(height) %>% #such as filter out missing data
   ggplot(aes(x = height)) + #autofills in starwars for first argument = data
   geom_histogram()
+```
+
+<br>
+
+### Density Plots
+Density plots are basically smoothed out histograms
+```{r message=FALSE, warning=FALSE}
+ggplot(penguins, aes(x = body_mass_g)) + # density plots => smoothed histograms
+  geom_density()
 ```
 
 <br>
