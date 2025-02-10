@@ -14,6 +14,8 @@ date: "2025-02-03"
 ```{r include=FALSE}
 library(tidyverse)
 library(gapminder)
+library(palmerpenguins)
+library(nycflights13)
 ```
 
 ```{r setup, include=FALSE}
@@ -150,36 +152,211 @@ msleep[missing,] #list of rows with missing data
 <br>
 
 ## 4. Clean
-### Select variables
-Variables can be selected by using varible names, column numbers, or by condition:
+
+### Manipulating Rows
+***filter()*** = allows you to keep rows based on the values of the columns
 ```{r eval = F}
-starwars %>% 
-  select(name, height, mass)
-
-starwars %>% 
-  select(1:3)
-
-starwars %>% 
-  select(ends_with("color")) # selects all variables that end with "color"
+flights %>% 
+  filter(dep_delay > 120)
 ```
 
 <br>
 
-### Changing varibale order 
+%in% can be used to shorten code
+```{r eval = F}
+# Flights that departed in January or February
+flights %>% 
+  filter(month == 1 | month == 2) # | means or
+
+flights %>%  
+  filter(month %in% c(1, 2))
+```
+
+<br>
+
+***arrange()*** = changes the order of rows
+```{r eval = F}
+flights %>% 
+  arrange(year, month, day, dep_time) 
+```
+
+<br>
+
+***desc()*** can be added to re-order the df from big to small
+
+```{r eval = F}
+flights %>% 
+  arrange(desc(dep_delay))
+```
+
+<br>
+
+***distinct()*** = finds unique rows in a dataset
+```{r eval = F}
+flights %>% 
+  distinct()
+
+flights %>% 
+  distinct(origin, dest) # only keeps orgin and dest columns
+
+flights %>% 
+  distinct(origin, dest, .keep_all = TRUE) # keeps all columns
+```
+
+<br>
+
+***count()*** = used to find number of occurances
+```{r eval = F}
+flights %>% 
+  count(origin, dest, sort = TRUE)
+```
+
+<br>
+
+### Manipulating Columns
+
+***mutate()*** = add new columns that are calculated from existing columns
+```{r eval = F}
+flights %>%  
+  mutate(
+    gain = dep_delay - arr_delay,
+    speed = distance / air_time * 60,
+    .after = day #this line changes where the new columns are placed
+  )
+```
+
+<br>
+
+***select()*** = allows you to select only a part of a dataset
+```{r eval = F}
+# Select using column names
+starwars %>% 
+  select(name, height, mass)
+
+# Select using column numbers
+starwars %>% 
+  select(1:3)
+```
+
+<br>
+
+Other modifiers that can be used in ***select()*** are shown below:
+
+| ***starts_with("abc")*** = matches names that begin with “abc”.
+| ***ends_with("xyz")*** = matches names that end with “xyz”.
+| ***contains("ijk")*** = matches names that contain “ijk”.
+| ***num_range("x", 1:3)*** = matches x1, x2 and x3.
+
+<br>
+
+***select()*** can also be used to rename a variable
+```{r eval = F}
+flights %>% 
+  select(tail_num = tailnum) #NEW variable is listed first
+```
+
+<br>
+
+***rename()*** = should be used to keep all existing variables and just rename a few
+```{r eval = F}
+flights %>% 
+  rename(tail_num = tailnum)
+```
+
+<br>
+
+***relocate()*** = used to move variables around
+```{r eval = F}
+# Move important variables to the front
+flights %>% 
+  relocate(time_hour, air_time)
+
+# Specify where to put variables
+flights %>% 
+  relocate(year:dep_time, .after = time_hour)
+
+flights %>% 
+  relocate(starts_with("arr"), .before = dep_time)
+```
+
+<br>
+
+### Manipulating Groups
+
+***group_by()*** = divide data set into groups meaningful for analysis, subsequent outputs work in the group
+```{r eval = F}
+flights %>%
+  group_by(month)
+```
+
+<br>
+
+***summarize()*** = presents summary stats, if used with group does one per group
+```{r eval = F}
+flights %>% 
+  group_by(month) %>% 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE),
+    n = n()
+  )
+```
+
+<br>
+
+***slice_*** = allows you to extract specific rows from groups
+
+| df %>% ***slice_head(n = 1)*** = takes the first row from each group.
+| df %>% ***slice_tail(n = 1)*** = takes the last row in each group.
+| df %>% ***slice_min(x, n = 1)*** = takes the row with the smallest value of column x.
+| df %>% ***slice_max(x, n = 1)*** = takes the row with the largest value of column x.
+| df %>% ***slice_sample(n = 1)*** = takes one random row.
+
+```{r eval = F}
+flights %>% 
+  group_by(dest) %>% 
+  slice_max(arr_delay, n = 1) %>% # n = # can be replaced with p = # to give a proportion of the data set
+  relocate(dest)
+```
+
+<br>
+
+You can group my multiple variables
+```{r eval = F}
+daily <- flights %>%  
+  group_by(year, month, day)
+```
+
+
+***ungroup()*** = ungroups the data
+```{r eval = F}
+daily %>% 
+  ungroup()
+```
+
+***.by*** = can be used to group within a single operation
+```{r eval = F}
+flights %>% 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE), 
+    n = n(),
+    .by = month
+  )
+
+flights %>% 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE), 
+    n = n(),
+    .by = c(origin, dest)
+  )
+```
+
+<br>
+
+### Changing variable order 
 The select command can also be used to reorder a dataset
 ```{r eval = F}
 starwars %>% 
   select(name, mass, height, everything())
-```
-
-<br>
- 
-### Changing variable name
-Varaibles can be renamed using **rename**, make sure to put the new name FIRST
-```{r eval = F}
-starwars %>% 
-  rename("characters" = "name") %>%  #new name first
-  head()
 ```
 
 <br>
@@ -210,17 +387,6 @@ levels(df$sex)
 
 <br>
 
-### Filter rows
-Filtering rows can easily be done with tidyverse
-```{r eval = F}
-starwars %>% 
-  select(mass, sex) %>% 
-  filter(mass < 55 &
-            sex == "male")
-```
-
-<br>
-
 ### Recode data
 You can easily change the way a variable is coded to fit a new format using **mutate**
 ```{r eval = F}
@@ -245,21 +411,6 @@ mean(starwars$height) #NA bc of missing data
 To fix this you can remove NA/missing data from calculations:
 ```{r}
 mean(starwars$height, na.rm = T) # NA remove = True
-```
-<br>
-
-
-### Dealing with duplicates
-
-Duplicates can also pose issues. By using **distinct()** you can get a df that does not have duplicates
-```{r}
-Names <- c("Peter", "John", "Andrew", "Peter")
-Age <- c(22, 33, 44, 22)
-friends <- data.frame(Names, Age)
-friends
-
-friends %>% 
-  distinct() #gives you a data frame that removes duplicates
 ```
 
 <br>

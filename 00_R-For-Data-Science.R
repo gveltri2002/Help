@@ -288,3 +288,313 @@ ggplot(data = mpg, aes(x = displ, y = hwy)) +
 # === === === === === ===
 
 ## Introduction ##
+library(nycflights13)
+library(tidyverse)
+
+View(flights)
+glimpse(flights)
+
+## Dplyr Basics ##
+# 1. The first argument is always a data frame.
+# 2. The subsequent arguments typically describe which columns to operate on using the variable names (without quotes).
+# 3. The output is always a new data frame.
+
+flights %>% 
+  filter(dest == "IAH") %>%  
+  group_by(year, month, day) %>% 
+  summarize(
+    arr_delay = mean(arr_delay, na.rm = TRUE)
+  )
+
+# === === === === === ===
+
+## Rows ##
+
+# filter() = changes which ROWS are present without changing the order
+flights %>% 
+  filter(dep_delay > 120)
+
+#Flights that departed on January 1
+flights %>% 
+  filter(month == 1 & day == 1)
+
+#Flights that departed in January OR February
+flights %>% 
+  filter(month == 1 | month == 2)
+
+flights %>% 
+  filter(month %in% c(1, 2))
+
+
+
+# arrange() = changes the order of ROWS based on which columns are present, doesn't filter data
+flights %>% 
+  arrange(year, month, day, dep_time) #filters by earliest year, then month, then dep_time
+
+flights %>% 
+  arrange(desc(dep_delay)) #desc() = orders big to small (descending)
+
+
+
+# distinct() = finds unique rows in a dataset
+# Remove duplicate rows, if any
+flights %>% 
+  distinct()
+
+# Find all unique origin and destination pairs
+flights %>% 
+  distinct(origin, dest)
+
+flights %>% 
+  distinct(origin, dest, .keep_all = TRUE) # .keep_all = keeps all other columns
+
+
+
+# count() = counts the number of rows that meet unique criteria
+flights %>% 
+  count(origin, dest, sort = TRUE)
+
+
+
+# Exercises
+names(flights)
+flights %>% 
+  filter(arr_delay >= 120)
+
+flights %>%
+  filter(dest == "IAH" | dest == "HOU")
+
+flights %>%
+  filter(month %in% c(7, 8, 9))
+
+flights %>%
+  filter(arr_delay > 120 & dep_delay <= 0)
+
+flights %>%
+  filter(dep_delay >= 60 & arr_delay < 30)
+
+
+flights %>% 
+  arrange(desc(dep_delay))
+
+flights %>% 
+  arrange(sched_dep_time)
+
+flights %>%
+  arrange(air_time) %>% 
+  select(air_time)
+
+flights %>% 
+  distinct(year, month, day)
+
+flights %>%
+  distinct(flight, distance) %>% 
+  arrange(desc(distance))
+  
+flights %>%
+  distinct(flight, distance) %>% 
+  arrange(distance)
+
+# === === === === === ===
+
+## Columns ##
+
+# mutate() = make news columns from old
+flights %>% 
+  mutate(
+    gain = dep_delay - arr_delay,
+    speed = distance / air_time * 60,
+    .after = day # adds new columns after day instead of left side
+  )
+
+flights %>% 
+  mutate(
+    gain = dep_delay - arr_delay,
+    hours = air_time / 60,
+    gain_per_hour = gain / hours,
+    .keep = "used"
+  )
+
+# select() = choses which columns to display
+#Select columns by name:
+flights %>% 
+  select(year, month, day)
+
+#Select all columns between year and day (inclusive):
+flights %>% 
+  select(year:day)
+
+#Select all columns except those from year to day (inclusive):
+flights %>% 
+  select(!year:day)
+
+
+
+# Exercises
+flights %>% 
+  select(dep_time, sched_dep_time, dep_delay)
+
+flights %>% 
+  select(day, year, day, day)
+
+variables <- c("year", "month", "day", "dep_delay", "arr_delay")
+
+flights %>% 
+  select(any_of(variables))
+
+flights %>% 
+  select(contains("time", ignore.case = FALSE))
+?contains
+
+# === === === === === ===
+
+## The Pipe ##
+# Allows you to combine multiple commands together => ex find the fastest flights to IAH
+flights %>% 
+  filter(dest == "IAH") %>% 
+  mutate(speed = distance / air_time * 60) %>% 
+  select(year:day, dep_time, carrier, flight, speed) %>% 
+  arrange(desc(speed))
+
+# === === === === === ===
+
+## Groups
+
+# group_by() = divide data set into groups meaningful for analysis, subsequent outputs work in the group
+flights %>%
+  group_by(month)
+
+
+
+# summarize() = presents summary stats, if used with group does one per group
+flights %>% 
+  group_by(month) %>% 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE),
+    n = n()
+  )
+
+
+
+# slice_ = allows you to extract specific rows from groups
+flights %>% 
+  group_by(dest) %>% 
+  slice_max(arr_delay, n = 1) %>% # n = # can be replaced with p = # to give a proportion of the data set
+  relocate(dest)
+
+
+
+# You can group my multiple variables
+daily <- flights %>%  
+  group_by(year, month, day)
+
+
+
+# ungroup() = ungroups the data
+daily %>% 
+  ungroup()
+
+# .by = can be used to group within a single operation
+flights %>% 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE), 
+    n = n(),
+    .by = month
+  )
+
+flights %>% 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE), 
+    n = n(),
+    .by = c(origin, dest)
+  )
+
+
+
+# Exercises
+flights %>% 
+  group_by(carrier) %>% 
+  summarize(
+    delay = mean(dep_delay, na.rm = TRUE)) %>% 
+  arrange(desc(delay))
+
+car_dest <- flights %>% 
+  group_by(carrier, dest) %>% 
+  summarize(n())
+view(car_dest)
+
+
+flights %>% 
+  select(month, day, flight, dest, dep_delay) %>% 
+  group_by(dest) %>% 
+  slice_max(dep_delay, n = 1) %>% 
+  arrange(dest)
+
+
+flights %>% 
+  select(year, month, day, dep_time, dep_delay) %>%
+  ggplot(., aes(dep_time, dep_delay)) +
+    geom_smooth()
+
+
+flights %>% 
+  select(month, day, flight, dest, dep_delay) %>% 
+  group_by(dest) %>% 
+  slice_min(dep_delay, n = -1) %>% 
+  arrange(dest)
+
+flights %>% 
+  count(dest, sort = TRUE)
+
+df <- tibble(
+  x = 1:5,
+  y = c("a", "b", "a", "a", "b"),
+  z = c("K", "K", "L", "L", "K")
+)
+
+df %>%
+  group_by(y)
+
+df %>%
+  arrange(y)
+
+df %>%
+  group_by(y) %>%
+  summarize(mean_x = mean(x))
+
+df %>%
+  group_by(y, z) %>%
+  summarize(mean_x = mean(x))
+
+df %>%
+  group_by(y, z) %>%
+  summarize(mean_x = mean(x), .groups = "drop")
+
+df %>%
+  group_by(y, z) %>%
+  mutate(mean_x = mean(x))
+
+# === === === === === ===
+
+## Case Study: aggregates and sample size
+install.packages("Lahman")
+library(Lahman)
+
+batters <- Lahman::Batting %>% 
+  group_by(playerID) %>% 
+  summarize(
+    performance = sum(H, na.rm = TRUE) / sum(AB, na.rm = TRUE),
+    n = sum(AB, na.rm = TRUE)
+  )
+view(batters)
+
+batters %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(x = n, y = performance)) +
+  geom_point(alpha = 1 / 10) + 
+  geom_smooth(se = FALSE)
+
+
+
+#### end ####
+      
