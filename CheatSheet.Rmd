@@ -16,6 +16,8 @@ library(tidyverse)
 library(gapminder)
 library(palmerpenguins)
 library(nycflights13)
+
+students <- read_csv("https://pos.it/r4ds-students-csv")
 ```
 
 ```{r setup, include=FALSE}
@@ -36,7 +38,12 @@ This is a document meant to serve as resource for coding with R. It combines my 
   
   The ggplot2 Book: https://ggplot2-book.org/
   
-  **Option + Shift + K** => opens up keyboard shorcuts
+  **Option + Shift + K** => opens up keyboard shortcuts
+  
+  **Cmd/Ctrl + Shift + 0/F10** =>  restart R
+  **Cmd/Ctrl + Shift + S** =>  re-run the current script.
+  
+  Setting up data to get help (Reprex) https://r4ds.hadley.nz/workflow-help.html
 
 <br>
 
@@ -62,7 +69,21 @@ getwd() #tells you working directory
 
 Once you know your working directory you can choose and import your data:
 ```{r eval = FALSE}
+# Under read.csv all you need is the file directory
 df <- read.csv(here("data", "sleep_score.csv")) # you can also use the here package which allows you to easily navigate through the directory tree
+```
+
+<br>
+
+If you need to skip line when uploading data use skip = n
+```{r eval = FALSE}
+read_csv(
+  "The first line of metadata
+  The second line of metadata
+  x,y,z
+  1,2,3",
+  skip = 2
+)
 ```
 
 <br>
@@ -109,6 +130,22 @@ friends [,1]
 
 <br>
 
+### Saving Data
+To save data you have been working on use ***write_csv*** where the first argument is the dataframe and the second is the new file name
+```{r echo = T, results = 'hide'}
+write_csv(students, "students-2.csv")
+read_csv("students-2.csv")
+```
+
+<br>
+One problem with ***write_csv*** is that it DOES NOT save column specification, so ***write_rds*** can be used instead:
+```{r echo = T, results = 'hide'}
+write_rds(students, "students.rds")
+read_rds("students.rds")
+```
+
+<br>
+
 ## 2. Tidyverse
 Tidyverse in an amazing package used to write code that is more efficient and concise. Tidyverse relies on the pipe opperator which basically means "and then"
 
@@ -151,9 +188,28 @@ msleep[missing,] #list of rows with missing data
 
 <br>
 
-## 4. Clean
+## 4. Clean/Manipulate
+
+The ultimate goal is to create tidy data. There are three interrelated rules that make a dataset tidy:
+
+1. Each variable is a column; each column is a variable.
+
+2. Each observation is a row; each row is an observation.
+
+3. Each value is a cell; each cell is a single value.
+
+<br>
+
+Why ensure that your data is tidy? There are two main advantages:
+
+1. There’s a general advantage to picking one consistent way of storing data. If you have a consistent data structure, it’s easier to learn the tools that work with it because they have an underlying uniformity.
+
+2. There’s a specific advantage to placing variables in columns because it allows R’s vectorized nature to shine. Most built-in R functions work with vectors of values. That makes transforming tidy data feel particularly natural.
+
+<br>
 
 ### Manipulating Rows
+
 ***filter()*** = allows you to keep rows based on the values of the columns
 ```{r eval = F}
 flights %>% 
@@ -183,7 +239,6 @@ flights %>%
 <br>
 
 ***desc()*** can be added to re-order the df from big to small
-
 ```{r eval = F}
 flights %>% 
   arrange(desc(dep_delay))
@@ -223,6 +278,26 @@ flights %>%
     speed = distance / air_time * 60,
     .after = day #this line changes where the new columns are placed
   )
+```
+
+<br>
+
+Variable type can also be changed using **mutate**
+```{r eval = F}
+starwars %>% 
+  mutate(hair_color = as.character(hair_color)) %>% 
+  glimpse()
+```
+
+<br>
+
+You can easily change the way a variable is coded to fit a new format using **mutate**
+```{r eval = F}
+starwars %>% 
+  select(sex) %>% 
+  mutate(sex = recode(sex,
+                      "male" = "man",
+                      "female" = "woman")) #Change male and female
 ```
 
 <br>
@@ -361,16 +436,6 @@ starwars %>%
 
 <br>
 
-### Changing variable type
-Variable type can be changed using **mutate**
-```{r eval = F}
-starwars %>% 
-  mutate(hair_color = as.character(hair_color)) %>% 
-  glimpse()
-```
-
-<br>
-
 ### Changing factor levels
 Factor levels are used to order categorical variables in useful ways. For example with looking at month data, months wil by default be ordered alphabetically. To change this you can order it using the **mutate** command. See how this is done using sex data:
 ```{r}
@@ -383,18 +448,6 @@ df<- df %>%
                       levels = c("male", "female","hermaphroditic", "none"
                                  )))
 levels(df$sex)
-```
-
-<br>
-
-### Recode data
-You can easily change the way a variable is coded to fit a new format using **mutate**
-```{r eval = F}
-starwars %>% 
-  select(sex) %>% 
-  mutate(sex = recode(sex,
-                      "male" = "man",
-                      "female" = "woman")) #Change male and female
 ```
 
 <br>
@@ -415,17 +468,6 @@ mean(starwars$height, na.rm = T) # NA remove = True
 
 <br>
 
-## 5. Manipulate
-### Create or change a variable (mutate)
-Earlier we saw how **mutate** can change a variable. One example is changing height to be displayed in m instead of cm:
-```{r eval = F}
-starwars %>% 
-  mutate(height_m = height/100) %>% 
-  select(name, height, height_m)
-```
-
-<br>
-
 ### Conditional change (if_else)
 Using **if_else** we can change how a variable is displayed such as createing a categorical variable from a discrete:
 ```{r eval = F}
@@ -438,7 +480,7 @@ starwars %>%
 
 <br>
 
-### Reshape data with pivot wider/longer
+### Reshape data (pivot wider/longer)
 Sometimes the data we are using is not in the format we want it to be (short vs. long). Take the gapminder data for example:
 ```{r include=FALSE}
 library(gapminder) #great dataset
@@ -473,7 +515,7 @@ view(long_data)
 
 <br>
 
-## 6. Describe
+## 5. Describe
 ### Summary stats
 Summary statistics can be individually generated, generated all at once, or generates for multiple varibles using a few simple commands:
 ```{r eval = F}
@@ -521,7 +563,7 @@ msleep %>%
 
 <br>
 
-## 7. Visualize
+## 6. Visualize
 
 ### The grammar of graphics
 In order to make graphs we need to understand what we are talking about
@@ -623,7 +665,7 @@ starwars %>%
 
 <br>
 
-## 8. Analyze
+## 7. Analyze
 ##### The following are examples of code used to run hypothsis tests
 
 <br>

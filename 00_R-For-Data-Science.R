@@ -1,7 +1,7 @@
 # === === === === === === === === === === === === === === === === === === 
 # Created by Gabe Veltri on 2/4/2025
 # Project: Help
-# Goal: Work though R For Data Science Book
+# Goal: Work though R For Data Science Book: Whole Game Section
 # === === === === === === === === === === === === === === === === === ===
 
 ### INTRO ###
@@ -597,4 +597,215 @@ batters %>%
 
 
 #### end ####
-      
+
+#### Workflow: Code Style ####
+
+## Intro
+library(styler)
+library(tidyverse)
+library(nycflights13)
+# sytler can be used to change the style of your code quickly and easily
+
+
+
+## Names
+# Strive for:
+short_flights <- flights |> filter(air_time < 60)
+
+## Spaces
+# Strive for = spaces after operators, commas, but not in/outside parenthesis
+z <- (a + b)^2 / d
+mean(x, na.rm = TRUE)
+
+# Its okay to add extra spaces for alignment
+flights |> 
+  mutate(
+    speed      = distance / air_time,
+    dep_hour   = dep_time %/% 100,
+    dep_minute = dep_time %%  100
+  )
+
+
+
+## Pipes
+# Should always be the last thing on the line, when piping into arugments (ie. mutate) put each argument on a new line
+flights |>  
+  group_by(tailnum) |> 
+  summarize(
+    delay = mean(arr_delay, na.rm = TRUE),
+    n = n()
+  )
+
+
+
+## Exercises
+flights |> 
+  filter(dest == "IAH") |>
+  group_by(year, month, day) |> 
+  summarize(
+    n = n(),
+    delay = mean(arr_delay, na.rm = TRUE)) |> 
+  filter(n>10)
+
+flights |> 
+  filter(
+    carrier == "UA", 
+    dest %in% c("IAH", "HOU"),
+    sched_dep_time > 0900,
+    sched_arr_time < 2000) |>
+  group_by(flight) |>
+  summarize(
+    delay = mean(arr_delay, na.rm = TRUE),
+    cancelled = sum(is.na(arr_delay)), n = n()) |>
+  filter(n > 10)
+
+#### end ####
+
+#### Data Tidying ####
+library(tidyverse)
+
+## Lengthening Data
+View(billboard)
+
+billboard_longer <- billboard %>%  
+  pivot_longer(
+    cols = starts_with("wk"), #select the variables that need to be pivoted
+    names_to = "week", #names the variable stored in the column name
+    values_to = "rank", #names the variable sored in the cell value
+    values_drop_na = TRUE #get rid of NA
+  ) %>%
+  mutate(
+    week = parse_number(week) # parse_number extracts the first number from a string
+  )
+
+billboard_longer %>% 
+  ggplot(aes(x = week, y = rank, group = track)) + 
+  geom_line(alpha = 0.25) + 
+  scale_y_reverse()
+
+
+
+# Many Variables in column names
+View(who2)
+
+who2 %>% 
+  pivot_longer(
+    cols = !(country:year), #selects all columns excluding country + year
+    names_to = c("diagnosis", "gender", "age"), 
+    names_sep = "_", 
+    values_to = "count"
+  )
+
+
+
+# Data and variable namesin column headings
+household
+
+household |> 
+  pivot_longer(
+    cols = !family, 
+    names_to = c(".value", "child"), #This overrides the usual values_to argument to use the first component of the pivoted column name as a variable name in the output.
+    names_sep = "_", 
+    values_drop_na = TRUE
+  )
+
+
+
+## Widening data
+cms_patient_experience
+
+cms_patient_experience |> 
+  pivot_wider(
+    id_cols = starts_with("org"), # unique ID for each row
+    names_from = measure_cd,
+    values_from = prf_rate
+  )
+
+#### end ####
+
+#### Data Import ####
+library(tidyverse)
+library(readr)
+library(janitor)
+
+## Reading data from a file
+# CSV
+students <- read.csv("https://pos.it/r4ds-students-csv", na = c("N/A", "")) #changes blanks and N/A to recognize as NA
+
+students %>% 
+  janitor::clean_names() %>% # will clean names easily
+  mutate(
+    meal_plan = factor(meal_plan),
+    age = parse_number(if_else(age == "five", "5", age)))
+
+
+
+# Exercises
+read_csv("x,y\n1,'a,b'", quote ="'")
+
+read_csv("a,b,c\n1,2,3\n4,5,6")
+read_csv("a,b,c,d\n1,2\n1,2,3,4")
+read_csv("a,b\n1,2\na,b")
+read_csv2("a;b\n1;3")
+
+annoying <- tibble(
+  `1` = 1:10,
+  `2` = `1` * 2 + rnorm(length(`1`))
+)
+
+annoying %>% 
+  select(`1`)
+
+annoying %>% 
+  ggplot(aes(x = `1`, y = `2`))+
+  geom_point()
+
+annoying <- annoying %>% 
+  mutate(`3` = `2`/`1`)
+
+annoying <- annoying %>%
+  rename(
+    Three = `3`,
+    Two = `2`,
+    One = `1`)
+
+
+
+
+## Controlling column types
+simple_csv <- "
+  x
+  10
+  .
+  20
+  30"
+
+df <- read_csv(
+  simple_csv, 
+  col_types = list(x = col_double())
+)
+
+problems(df)
+
+read_csv(simple_csv, na = ".")
+
+
+# Combining data from multiple tables
+sales_files <- c(
+  "https://pos.it/r4ds-01-sales",
+  "https://pos.it/r4ds-02-sales",
+  "https://pos.it/r4ds-03-sales"
+)
+
+read_csv(sales_files, id = "file")
+
+#### end ####
+
+# === === === === === === === === === === === === === === === === === ===
+
+### VISUALIZE ###
+
+
+
+
+
