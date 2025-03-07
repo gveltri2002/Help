@@ -1583,11 +1583,13 @@ to this over time. Enjoy!</p>
 <p>Graphing Info: <a href="https://r-graph-gallery.com/" class="uri">https://r-graph-gallery.com/</a></p>
 <p>R for Data Science: <a href="https://r4ds.hadley.nz/" class="uri">https://r4ds.hadley.nz/</a></p>
 <p>The ggplot2 Book: <a href="https://ggplot2-book.org/" class="uri">https://ggplot2-book.org/</a></p>
+<p>GGplot Extensions Gallery: <a href="https://exts.ggplot2.tidyverse.org/gallery/" class="uri">https://exts.ggplot2.tidyverse.org/gallery/</a></p>
 <p><strong>Option + Shift + K</strong> =&gt; opens up keyboard
 shortcuts</p>
 <p><strong>Cmd/Ctrl + Shift + 0/F10</strong> =&gt; restart R
 <strong>Cmd/Ctrl + Shift + S</strong> =&gt; re-run the current
 script.</p>
+<p>Setting up data to get help (Reprex) <a href="https://r4ds.hadley.nz/workflow-help.html" class="uri">https://r4ds.hadley.nz/workflow-help.html</a></p>
 <p><br></p>
 <p><br></p>
 </div>
@@ -1600,7 +1602,7 @@ script.</p>
 <p><br></p>
 </div>
 <div id="uploading-data" class="section level3">
-<h3>Uploading Data</h3>
+<h3>1.1 Uploading Data</h3>
 <p>Uploading data requires you to understand your working directory. The
 package <strong>here</strong> is very helpful for easily navigating
 directory trees</p>
@@ -1626,7 +1628,7 @@ are available run:</p>
 <p><br></p>
 </div>
 <div id="variables-and-functions" class="section level3">
-<h3>Variables and Functions</h3>
+<h3>1.2 Variables and Functions</h3>
 <p>Using R involves assigning variables and is done with the &lt;-</p>
 <p>**&lt;- can be quickly typed using: Opt. + -</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">5</span></span>
@@ -1653,7 +1655,7 @@ variables or individual rows and columns</p>
 <p><br></p>
 </div>
 <div id="saving-data" class="section level3">
-<h3>Saving Data</h3>
+<h3>1.3 Saving Data</h3>
 <p>To save data you have been working on use
 <strong><em>write_csv</em></strong> where the first argument is the
 dataframe and the second is the new file name</p>
@@ -1695,8 +1697,18 @@ dataset:</p>
 </div>
 <div id="explore" class="section level2">
 <h2>3. Explore</h2>
-<div id="data-structures-and-types-of-variables" class="section level3">
-<h3>Data structures and types of variables</h3>
+<div id="asking-questions" class="section level3">
+<h3>3.1 Asking Questions</h3>
+<p>When starting your data analysis you should be asking a lot of
+questions to help you conduct a thorough analysis. Two kinds of
+questions that are very useful are shown below</p>
+<ol style="list-style-type: decimal">
+<li><p>What type of variation occurs within my variables?</p></li>
+<li><p>What type of covariation occurs between my variables?</p></li>
+</ol>
+</div>
+<div id="data-structures-and-variables" class="section level3">
+<h3>3.2 Data structures and variables</h3>
 <p>There are numerous commands that are useful for looking at and
 viewing data. Here I will provide them and a breift description of what
 they do:</p>
@@ -1714,8 +1726,8 @@ variables in a df<br />
 variable</div>
 <p><br></p>
 </div>
-<div id="dealing-with-missing-data" class="section level3">
-<h3>Dealing with missing data</h3>
+<div id="missing-data" class="section level3">
+<h3>3.3 Missing data</h3>
 <p>Here is a line of code that is good for seeing missing data =&gt;
 <strong>!</strong> inverts data, <strong>complete.cases</strong> gives
 list of which there is no missing data</p>
@@ -1747,7 +1759,9 @@ feel particularly natural.</p></li>
 </ol>
 <p><br></p>
 <div id="manipulating-rows" class="section level3">
-<h3>Manipulating Rows</h3>
+<h3>4.1 Manipulating Rows</h3>
+<div id="filter" class="section level4">
+<h4>4.1.1 Filter</h4>
 <p><strong><em>filter()</em></strong> = allows you to keep rows based on
 the values of the columns</p>
 <div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
@@ -1761,15 +1775,24 @@ the values of the columns</p>
 <span id="cb16-5"><a href="#cb16-5" tabindex="-1"></a>flights <span class="sc">%&gt;%</span>  </span>
 <span id="cb16-6"><a href="#cb16-6" tabindex="-1"></a>  <span class="fu">filter</span>(month <span class="sc">%in%</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))</span></code></pre></div>
 <p><br></p>
+</div>
+<div id="arrange" class="section level4">
+<h4>4.1.2 Arrange</h4>
 <p><strong><em>arrange()</em></strong> = changes the order of rows</p>
 <div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb17-2"><a href="#cb17-2" tabindex="-1"></a>  <span class="fu">arrange</span>(year, month, day, dep_time) </span></code></pre></div>
 <p><br></p>
+</div>
+<div id="desc" class="section level4">
+<h4>4.1.3 Desc</h4>
 <p><strong><em>desc()</em></strong> can be added to re-order the df from
 big to small</p>
 <div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb18-2"><a href="#cb18-2" tabindex="-1"></a>  <span class="fu">arrange</span>(<span class="fu">desc</span>(dep_delay))</span></code></pre></div>
 <p><br></p>
+</div>
+<div id="distinct" class="section level4">
+<h4>4.1.4 Distinct</h4>
 <p><strong><em>distinct()</em></strong> = finds unique rows in a
 dataset</p>
 <div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
@@ -1781,14 +1804,20 @@ dataset</p>
 <span id="cb19-7"><a href="#cb19-7" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb19-8"><a href="#cb19-8" tabindex="-1"></a>  <span class="fu">distinct</span>(origin, dest, <span class="at">.keep_all =</span> <span class="cn">TRUE</span>) <span class="co"># keeps all columns</span></span></code></pre></div>
 <p><br></p>
+</div>
+<div id="count" class="section level4">
+<h4>4.1.5 Count</h4>
 <p><strong><em>count()</em></strong> = used to find number of
 occurances</p>
 <div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb20-2"><a href="#cb20-2" tabindex="-1"></a>  <span class="fu">count</span>(origin, dest, <span class="at">sort =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
 <p><br></p>
 </div>
+</div>
 <div id="manipulating-columns" class="section level3">
-<h3>Manipulating Columns</h3>
+<h3>4.2 Manipulating Columns</h3>
+<div id="mutate" class="section level4">
+<h4>4.2.1 Mutate</h4>
 <p><strong><em>mutate()</em></strong> = add new columns that are
 calculated from existing columns</p>
 <div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span>  </span>
@@ -1811,6 +1840,9 @@ using <strong>mutate</strong></p>
 <span id="cb23-4"><a href="#cb23-4" tabindex="-1"></a>                      <span class="st">&quot;male&quot;</span> <span class="ot">=</span> <span class="st">&quot;man&quot;</span>,</span>
 <span id="cb23-5"><a href="#cb23-5" tabindex="-1"></a>                      <span class="st">&quot;female&quot;</span> <span class="ot">=</span> <span class="st">&quot;woman&quot;</span>)) <span class="co">#Change male and female</span></span></code></pre></div>
 <p><br></p>
+</div>
+<div id="select" class="section level4">
+<h4>4.2.2 Select</h4>
 <p><strong><em>select()</em></strong> = allows you to select only a part
 of a dataset</p>
 <div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" tabindex="-1"></a><span class="co"># Select using column names</span></span>
@@ -1837,11 +1869,17 @@ variable</p>
 <div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb25-2"><a href="#cb25-2" tabindex="-1"></a>  <span class="fu">select</span>(<span class="at">tail_num =</span> tailnum) <span class="co">#NEW variable is listed first</span></span></code></pre></div>
 <p><br></p>
+</div>
+<div id="rename" class="section level4">
+<h4>4.2.3 Rename</h4>
 <p><strong><em>rename()</em></strong> = should be used to keep all
 existing variables and just rename a few</p>
 <div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
 <span id="cb26-2"><a href="#cb26-2" tabindex="-1"></a>  <span class="fu">rename</span>(<span class="at">tail_num =</span> tailnum)</span></code></pre></div>
 <p><br></p>
+</div>
+<div id="relocate" class="section level4">
+<h4>4.2.4 Relocate</h4>
 <p><strong><em>relocate()</em></strong> = used to move variables
 around</p>
 <div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" tabindex="-1"></a><span class="co"># Move important variables to the front</span></span>
@@ -1856,22 +1894,35 @@ around</p>
 <span id="cb27-10"><a href="#cb27-10" tabindex="-1"></a>  <span class="fu">relocate</span>(<span class="fu">starts_with</span>(<span class="st">&quot;arr&quot;</span>), <span class="at">.before =</span> dep_time)</span></code></pre></div>
 <p><br></p>
 </div>
+</div>
 <div id="manipulating-groups" class="section level3">
-<h3>Manipulating Groups</h3>
+<h3>4.3 Manipulating Groups</h3>
+<div id="group_by" class="section level4">
+<h4>4.3.1 Group_by</h4>
 <p><strong><em>group_by()</em></strong> = divide data set into groups
 meaningful for analysis, subsequent outputs work in the group</p>
 <div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span></span>
 <span id="cb28-2"><a href="#cb28-2" tabindex="-1"></a>  <span class="fu">group_by</span>(month)</span></code></pre></div>
 <p><br></p>
+<p>You can <strong><em>group_by</em></strong> multiple variables</p>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>daily <span class="ot">&lt;-</span> flights <span class="sc">%&gt;%</span>  </span>
+<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">group_by</span>(year, month, day)</span></code></pre></div>
+<p><br></p>
+</div>
+<div id="summarize" class="section level4">
+<h4>4.3.2 Summarize</h4>
 <p><strong><em>summarize()</em></strong> = presents summary stats, if
 used with group does one per group</p>
-<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
-<span id="cb29-2"><a href="#cb29-2" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span> </span>
-<span id="cb29-3"><a href="#cb29-3" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
-<span id="cb29-4"><a href="#cb29-4" tabindex="-1"></a>    <span class="at">avg_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
-<span id="cb29-5"><a href="#cb29-5" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>()</span>
-<span id="cb29-6"><a href="#cb29-6" tabindex="-1"></a>  )</span></code></pre></div>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
+<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="fu">group_by</span>(month) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="fu">summarize</span>(</span>
+<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>    <span class="at">avg_delay =</span> <span class="fu">mean</span>(dep_delay, <span class="at">na.rm =</span> <span class="cn">TRUE</span>),</span>
+<span id="cb30-5"><a href="#cb30-5" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>()</span>
+<span id="cb30-6"><a href="#cb30-6" tabindex="-1"></a>  )</span></code></pre></div>
 <p><br></p>
+</div>
+<div id="slice" class="section level4">
+<h4>4.3.3 Slice</h4>
 <p><strong><em>slice_</em></strong> = allows you to extract specific
 rows from groups</p>
 <div class="line-block">df %&gt;% <strong><em>slice_head(n =
@@ -1884,17 +1935,21 @@ df %&gt;% <strong><em>slice_max(x, n = 1)</em></strong> = takes the row
 with the largest value of column x.<br />
 df %&gt;% <strong><em>slice_sample(n = 1)</em></strong> = takes one
 random row.</div>
-<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
-<span id="cb30-2"><a href="#cb30-2" tabindex="-1"></a>  <span class="fu">group_by</span>(dest) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-3"><a href="#cb30-3" tabindex="-1"></a>  <span class="fu">slice_max</span>(arr_delay, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="co"># n = # can be replaced with p = # to give a proportion of the data set</span></span>
-<span id="cb30-4"><a href="#cb30-4" tabindex="-1"></a>  <span class="fu">relocate</span>(dest)</span></code></pre></div>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">group_by</span>(dest) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-3"><a href="#cb31-3" tabindex="-1"></a>  <span class="fu">slice_max</span>(arr_delay, <span class="at">n =</span> <span class="dv">1</span>) <span class="sc">%&gt;%</span> <span class="co"># n = # can be replaced with p = # to give a proportion of the data set</span></span>
+<span id="cb31-4"><a href="#cb31-4" tabindex="-1"></a>  <span class="fu">relocate</span>(dest)</span></code></pre></div>
 <p><br></p>
-<p>You can group my multiple variables</p>
-<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" tabindex="-1"></a>daily <span class="ot">&lt;-</span> flights <span class="sc">%&gt;%</span>  </span>
-<span id="cb31-2"><a href="#cb31-2" tabindex="-1"></a>  <span class="fu">group_by</span>(year, month, day)</span></code></pre></div>
+</div>
+<div id="ungroup" class="section level4">
+<h4>4.3.4 Ungroup</h4>
 <p><strong><em>ungroup()</em></strong> = ungroups the data</p>
 <div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" tabindex="-1"></a>daily <span class="sc">%&gt;%</span> </span>
 <span id="cb32-2"><a href="#cb32-2" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span></code></pre></div>
+<p><br></p>
+</div>
+<div id="by" class="section level4">
+<h4>4.3.5 .by</h4>
 <p><strong><em>.by</em></strong> = can be used to group within a single
 operation</p>
 <div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" tabindex="-1"></a>flights <span class="sc">%&gt;%</span> </span>
@@ -1912,15 +1967,16 @@ operation</p>
 <span id="cb33-13"><a href="#cb33-13" tabindex="-1"></a>  )</span></code></pre></div>
 <p><br></p>
 </div>
-<div id="changing-variable-order" class="section level3">
-<h3>Changing variable order</h3>
+</div>
+<div id="variable-order" class="section level3">
+<h3>4.4 Variable Order</h3>
 <p>The select command can also be used to reorder a dataset</p>
 <div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
 <span id="cb34-2"><a href="#cb34-2" tabindex="-1"></a>  <span class="fu">select</span>(name, mass, height, <span class="fu">everything</span>())</span></code></pre></div>
 <p><br></p>
 </div>
-<div id="changing-factor-levels" class="section level3">
-<h3>Changing factor levels</h3>
+<div id="factor-levels" class="section level3">
+<h3>4.5 Factor Levels</h3>
 <p>Factor levels are used to order categorical variables in useful ways.
 For example with looking at month data, months wil by default be ordered
 alphabetically. To change this you can order it using the
@@ -1938,8 +1994,8 @@ data:</p>
 <pre><code>## [1] &quot;male&quot;           &quot;female&quot;         &quot;hermaphroditic&quot; &quot;none&quot;</code></pre>
 <p><br></p>
 </div>
-<div id="dealing-with-missing-data-1" class="section level3">
-<h3>Dealing with missing data</h3>
+<div id="missing-data-1" class="section level3">
+<h3>4.6 Missing Data</h3>
 <p>When working with dataset with missing data you can run into
 issues:</p>
 <div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" tabindex="-1"></a><span class="fu">mean</span>(starwars<span class="sc">$</span>height) <span class="co">#NA bc of missing data</span></span></code></pre></div>
@@ -1951,7 +2007,7 @@ issues:</p>
 <p><br></p>
 </div>
 <div id="conditional-change-if_else" class="section level3">
-<h3>Conditional change (if_else)</h3>
+<h3>4.7 Conditional change (if_else)</h3>
 <p>Using <strong>if_else</strong> we can change how a variable is
 displayed such as createing a categorical variable from a discrete:</p>
 <div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
@@ -1961,8 +2017,10 @@ displayed such as createing a categorical variable from a discrete:</p>
 <span id="cb43-5"><a href="#cb43-5" tabindex="-1"></a>           <span class="fu">if_else</span>(height_m <span class="sc">&lt;</span> <span class="dv">1</span>, <span class="st">&quot;short&quot;</span>, <span class="st">&quot;tall&quot;</span>)) <span class="co">#condition, if met, else</span></span></code></pre></div>
 <p><br></p>
 </div>
-<div id="reshape-data-pivot-widerlonger" class="section level3">
-<h3>Reshape data (pivot wider/longer)</h3>
+<div id="reshape-data" class="section level3">
+<h3>4.8 Reshape data</h3>
+<div id="intro" class="section level4">
+<h4>4.8.1 Intro</h4>
 <p>Sometimes the data we are using is not in the format we want it to be
 (short vs. long). Take the gapminder data for example:</p>
 <div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" tabindex="-1"></a><span class="fu">head</span>(data)</span></code></pre></div>
@@ -1976,6 +2034,9 @@ displayed such as createing a categorical variable from a discrete:</p>
 ## 5 Afghanistan  1972    36.1
 ## 6 Afghanistan  1977    38.4</code></pre>
 <p><br></p>
+</div>
+<div id="pivot_wider" class="section level4">
+<h4>4.8.2 Pivot_wider</h4>
 <p>This data is in long format where each country is represented
 multiple times in multiple rows. What we can do is using the
 <strong>pivot_wider</strong> function to change the data. The code below
@@ -1995,6 +2056,9 @@ THEN it is filling those with the values for “lifeExp”</p>
 ## 6 Austral…   69.1   70.3   70.9   71.1   71.9   73.5   74.7   76.3   77.6   78.8
 ## # ℹ 2 more variables: `2002` &lt;dbl&gt;, `2007` &lt;dbl&gt;</code></pre>
 <p><br></p>
+</div>
+<div id="pivot_longer" class="section level4">
+<h4>4.8.3 Pivot_longer</h4>
 <p>This code uses the <strong>pivot_longer</strong> function to reverse
 what was done</p>
 <div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" tabindex="-1"></a>long_data <span class="ot">&lt;-</span> wide_data <span class="sc">%&gt;%</span> </span>
@@ -2003,6 +2067,7 @@ what was done</p>
 <span id="cb48-4"><a href="#cb48-4" tabindex="-1"></a>               <span class="at">values_to =</span> <span class="st">&quot;lifeExp&quot;</span>)</span>
 <span id="cb48-5"><a href="#cb48-5" tabindex="-1"></a><span class="fu">view</span>(long_data)</span></code></pre></div>
 <p><br></p>
+</div>
 </div>
 </div>
 <div id="describe" class="section level2">
@@ -2059,22 +2124,26 @@ simple:</p>
 </div>
 <div id="visualize" class="section level2">
 <h2>6. Visualize</h2>
-<div id="the-grammar-of-graphics" class="section level3">
-<h3>The grammar of graphics</h3>
+<div id="grammar-of-graphics" class="section level3">
+<h3>6.1 Grammar of Graphics</h3>
 <p>In order to make graphs we need to understand what we are talking
 about</p>
 <pre><code>Data =&gt; what data are you using
 Mapping =&gt; using aesthetics (x and y axis, color, shape, size, etc.)
 Geometry =&gt; line, bar chart, histograms, etc.</code></pre>
 <p><br></p>
-<div id="here-i-provide-code-to-different-graph-types.-the-code-gets-increasily-complex-and-can-be-used-to-develop-your-own-figures" class="section level5">
+<div id="here-i-provide-code-to-different-graph-types.-the-code-gets-increasily-complex-and-can-be-used-to-develop-your-own-figures-but-here-is-an-overall-template-for-making-graphs" class="section level5">
 <h5>Here I provide code to different graph types. The code gets
-increasily complex and can be used to develop your own figures:</h5>
+increasily complex and can be used to develop your own figures, but here
+is an overall template for making graphs</h5>
+<p>ggplot(data = <DATA>) + <GEOM_FUNCTION>( mapping = aes(<MAPPINGS>),
+stat = <STAT>, position = <POSITION> ) + <COORDINATE_FUNCTION> +
+<FACET_FUNCTION></p>
 <p><br></p>
 </div>
 </div>
 <div id="bar-charts" class="section level3">
-<h3>Bar charts</h3>
+<h3>6.2 Bar charts</h3>
 <p>Bar charts are used to display categorical data:</p>
 <div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" tabindex="-1"></a><span class="fu">ggplot</span>(<span class="at">data =</span> starwars,</span>
 <span id="cb56-2"><a href="#cb56-2" tabindex="-1"></a>       <span class="at">mapping =</span> <span class="fu">aes</span>(<span class="at">x =</span> gender)) <span class="sc">+</span></span>
@@ -2083,7 +2152,7 @@ increasily complex and can be used to develop your own figures:</h5>
 <p><br></p>
 </div>
 <div id="histograms" class="section level3">
-<h3>Histograms</h3>
+<h3>6.3 Histograms</h3>
 <div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> <span class="co">#piping data in allows you to do stuff with it BEFORE it gets to the graphic</span></span>
 <span id="cb57-2"><a href="#cb57-2" tabindex="-1"></a>  <span class="fu">drop_na</span>(height) <span class="sc">%&gt;%</span> <span class="co">#such as filter out missing data</span></span>
 <span id="cb57-3"><a href="#cb57-3" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> height)) <span class="sc">+</span> <span class="co">#autofills in starwars for first argument = data</span></span>
@@ -2092,7 +2161,7 @@ increasily complex and can be used to develop your own figures:</h5>
 <p><br></p>
 </div>
 <div id="density-plots" class="section level3">
-<h3>Density Plots</h3>
+<h3>6.4 Density Plots</h3>
 <p>Density plots are basically smoothed out histograms</p>
 <div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" tabindex="-1"></a><span class="fu">ggplot</span>(penguins, <span class="fu">aes</span>(<span class="at">x =</span> body_mass_g)) <span class="sc">+</span> <span class="co"># density plots =&gt; smoothed histograms</span></span>
 <span id="cb58-2"><a href="#cb58-2" tabindex="-1"></a>  <span class="fu">geom_density</span>()</span></code></pre></div>
@@ -2100,7 +2169,7 @@ increasily complex and can be used to develop your own figures:</h5>
 <p><br></p>
 </div>
 <div id="box-plots" class="section level3">
-<h3>Box plots</h3>
+<h3>6.5 Box plots</h3>
 <p>Boxplots display distributions of data:</p>
 <div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
 <span id="cb59-2"><a href="#cb59-2" tabindex="-1"></a>  <span class="fu">drop_na</span>(height) <span class="sc">%&gt;%</span> </span>
@@ -2113,7 +2182,7 @@ increasily complex and can be used to develop your own figures:</h5>
 <p><br></p>
 </div>
 <div id="density-plots-1" class="section level3">
-<h3>Density plots</h3>
+<h3>6.7 Density plots</h3>
 <p>Density plots show how data is distributed over a contiunous
 interval</p>
 <div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
@@ -2128,7 +2197,7 @@ interval</p>
 <p><br></p>
 </div>
 <div id="scatter-plots" class="section level3">
-<h3>Scatter plots</h3>
+<h3>6.8 Scatter plots</h3>
 <p>Scatter plots show the relationship between two variables</p>
 <div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
 <span id="cb61-2"><a href="#cb61-2" tabindex="-1"></a>  <span class="fu">filter</span>(mass <span class="sc">&lt;</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
@@ -2142,7 +2211,7 @@ interval</p>
 <p><br></p>
 </div>
 <div id="smoothed-model" class="section level3">
-<h3>Smoothed model</h3>
+<h3>6.9 Smoothed model</h3>
 <p>Smoothed model graphs elimate noise from scatter plots</p>
 <div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" tabindex="-1"></a>starwars <span class="sc">%&gt;%</span> </span>
 <span id="cb62-2"><a href="#cb62-2" tabindex="-1"></a>  <span class="fu">filter</span>(mass <span class="sc">&lt;</span> <span class="dv">200</span>) <span class="sc">%&gt;%</span> </span>
@@ -2163,7 +2232,7 @@ interval</p>
 <p><br></p>
 </div>
 <div id="t-test" class="section level3">
-<h3>T-test</h3>
+<h3>7.1 T-test</h3>
 <p>T-tests are used for comparing means of 2 groups</p>
 <p>This code is running a test to determine if there is a difference in
 mean life expectancy between Africa and Europe:</p>
@@ -2186,7 +2255,7 @@ mean life expectancy between Africa and Europe:</p>
 <p><br></p>
 </div>
 <div id="anova" class="section level3">
-<h3>ANOVA</h3>
+<h3>7.2 ANOVA</h3>
 <p>AVONAs are used for comparing means of 3+ groups</p>
 <p>This code now compares 3 continents:</p>
 <div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" tabindex="-1"></a>gapminder <span class="sc">%&gt;%</span> </span>
@@ -2220,7 +2289,7 @@ we want a p value for each pairing we need to run this code</p>
 <p><br></p>
 </div>
 <div id="chi-squared-goodness-of-fit-test" class="section level3">
-<h3>Chi Squared goodness of fit test</h3>
+<h3>7.3 Chi Squared goodness of fit test</h3>
 <p>This test is used to comparing categorical data</p>
 <p>This code is running a test to determine if there an equal proportion
 of flowers of each size</p>
@@ -2238,7 +2307,7 @@ significant difference</p>
 <p><br></p>
 </div>
 <div id="chi-squared-test-of-independence" class="section level3">
-<h3>Chi Squared test of independence</h3>
+<h3>7.4 Chi Squared test of independence</h3>
 <p>This test is asking the question, are size and species
 independent</p>
 <div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" tabindex="-1"></a>flowers <span class="sc">%&gt;%</span>  <span class="co"># includes size and species data</span></span>
@@ -2254,7 +2323,7 @@ significant, categories are linked</p>
 <p><br></p>
 </div>
 <div id="linear-model" class="section level3">
-<h3>Linear model</h3>
+<h3>7.5 Linear model</h3>
 <p>This test is looking at the relationship bwtween stopping distance
 and speed of car</p>
 <div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" tabindex="-1"></a>cars <span class="sc">%&gt;%</span> </span>

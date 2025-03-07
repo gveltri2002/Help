@@ -805,6 +805,343 @@ read_csv(sales_files, id = "file")
 
 ### VISUALIZE ###
 
+#### Layers ####
+library(tidyverse)
+
+## Aesthetics Mapping
+ggplot(mpg, aes(x = displ, y = hwy, color = class)) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, shape = class)) + # shape can only handle 6 varaibles
+  geom_point()
+
+# Exercises
+ggplot(mpg, aes(displ, hwy)) +
+  geom_point(shape = 24, fill = "pink", stroke = 0.7)
+
+ggplot(mpg) + 
+  geom_point(aes(x = displ, y = hwy), color = "blue")
+
+?geom_point
+
+ggplot(mpg, aes(displ, hwy, color = displ < 5)) +
+  geom_point()
+
+
+
+## Geometric Objects
+# Exercises
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_smooth(se = F) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_smooth(aes(group = drv), se = F) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy, color = drv)) +
+  geom_smooth(se = F) +
+  geom_point()
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_smooth(se = F) +
+  geom_point(aes(color = drv))
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_smooth(aes(linetype = drv), se = F) +
+  geom_point(aes(color = drv))
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(color = "white",size = 4) +
+  geom_point(aes(color = drv))
+
+
+
+
+## Facets
+# used to subset data based on categorical variables
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  facet_wrap(~cyl)
+
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  facet_grid(drv ~ cyl)
+
+# Exercises
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point() + 
+  facet_wrap(~displ)
+
+ggplot(mpg) + 
+  geom_point(aes(x = drv, y = cyl))
+
+ggplot(mpg) + 
+  geom_point(aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+ggplot(mpg) + 
+  geom_point(aes(x = displ, y = hwy)) +
+  facet_grid(. ~ cyl)
+
+ggplot(mpg) + 
+  geom_point(aes(x = displ, y = hwy)) + 
+  facet_wrap(~ cyl, nrow = 2)
+
+?facet_wrap
+
+ggplot(mpg, aes(x = displ)) + 
+  geom_histogram() + 
+  facet_grid(drv ~ .)
+
+ggplot(mpg, aes(x = displ)) + 
+  geom_histogram() +
+  facet_grid(. ~ drv)
+
+ggplot(mpg) + 
+  geom_point(aes(x = displ, y = hwy)) +
+  facet_grid(drv ~ .)
+
+
+
+## Statistical Transformations
+ggplot(diamonds, aes(x = cut)) + 
+  geom_bar()
+
+ggplot(diamonds, aes(x = cut, y = after_stat(prop), group = 1)) + 
+  geom_bar()
+
+ggplot(diamonds) + 
+  stat_summary(
+    aes(x = cut, y = depth),
+    fun.min = min,
+    fun.max = max,
+    fun = median
+  )
+
+# Exercises
+?stat_summary
+
+diamonds |>
+  group_by(cut) |>
+  summarize(
+    lower = min(depth),
+    upper = max(depth),
+    midpoint = median(depth)
+  ) |>
+  ggplot(aes(x = cut, y = midpoint)) +
+  geom_pointrange(aes(ymin = lower, ymax = upper))
+
+?geom_col
+?stat_smooth
+
+ggplot(diamonds, aes(x = cut, y = after_stat(prop))) + 
+  geom_bar()
+ggplot(diamonds, aes(x = cut, fill = color, y = after_stat(prop))) + 
+  geom_bar()
+
+
+
+## Position Adjustments
+# Stacked Bar Charts
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "fill") # good for comparing proportions
+
+ggplot(mpg, aes(x = drv, fill = class)) + 
+  geom_bar(position = "dodge") # puts everything next to each other
+
+ggplot(mpg, aes(x = displ, y = hwy)) + 
+  geom_point(position = "jitter") # allows plotting high density data with overlap
+
+# Exercises
+ggplot(mpg, aes(x = cty, y = hwy)) + 
+  geom_jitter()
+ggplot(mpg, aes(x = cty, y = hwy)) + 
+  geom_count()
+
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point()
+ggplot(mpg, aes(x = displ, y = hwy)) +
+  geom_point(position = "identity")
+
+?geom_jitter
+?geom_count
+?geom_boxplot
+
+ggplot(mpg, aes(x = displ, y = cty)) +
+  geom_boxplot()
+
+
+
+## Coordinate Systems
+nz <- map_data("nz")
+
+ggplot(nz, aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "white", color = "black") +
+  coord_quickmap() #sets the aspect ratio correctly for geographic maps
+
+bar <- ggplot(data = diamonds) + 
+  geom_bar(
+    mapping = aes(x = clarity, fill = clarity), 
+    show.legend = FALSE,
+    width = 1
+  ) + 
+  theme(aspect.ratio = 1)
+
+bar + coord_flip()
+bar + coord_polar() # polar coordinates
+
+# Exercises
+ggplot(mpg, aes(x = "", fill = class)) +
+  geom_bar(position = "fill") +
+  coord_polar(theta = "y")
+
+?coord_map()
+
+ggplot(data = mpg, mapping = aes(x = cty, y = hwy)) +
+  geom_point() + 
+  geom_abline() +
+  coord_fixed()
+
+?geom_abline
+?coord_fixed
+
+#### end ####
+
+#### Exploratory Data Analysis ####
+library(tidyverse)
+
+## Variation
+# Exercises
+ggplot(diamonds, aes(x = x)) + 
+  geom_histogram()
+
+ggplot(diamonds, aes(x = y)) + 
+  geom_histogram(binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+
+ggplot(diamonds, aes(x = z)) + 
+  geom_histogram(binwidth = 0.5) +
+  coord_cartesian(ylim = c(0, 50))
+
+
+
+## Unusual Values
+# Exercises
+library("nycflights13")
+View(flights)
+
+nycflights13::flights |> 
+  ggplot(aes(x = dep_time)) +
+  geom_histogram()
+
+
+
+## Covariation
+# Exercises
+nycflights13::flights |> 
+  mutate(
+    cancelled = is.na(dep_time),
+    sched_hour = sched_dep_time %/% 100,
+    sched_min = sched_dep_time %% 100,
+    sched_dep_time = sched_hour + (sched_min / 60)
+  ) |> 
+  ggplot(aes(x = sched_dep_time, y = after_stat(density))) + 
+  geom_freqpoly(aes(color = cancelled), binwidth = 1/4)
+
+view(diamonds)
+tibble(diamonds)
+
+diamonds %>% 
+  ggplot(aes(x = clarity, y = price)) +
+  geom_boxplot()
+
+diamonds %>% 
+  ggplot(aes(x = carat, y = price)) +
+  geom_smooth()
+
+diamonds %>% 
+  ggplot(aes(x = carat, y = price, color = cut)) +
+  geom_smooth()
+
+install.packages("lvplot")
+library(lvplot)
+
+diamonds %>% 
+  ggplot(aes(x = cut, y = price)) +
+  geom_lv()
+
+diamonds %>% 
+  ggplot(aes(x = cut, y = price)) +
+  geom_violin()
+
+diamonds %>% 
+  ggplot(aes(x = price)) +
+  geom_histogram() +
+  facet_grid(cut ~ .)
+
+diamonds %>% 
+  ggplot(aes(x = price)) +
+  geom_freqpoly(aes(color = cut))
+
+diamonds %>% 
+  ggplot(aes(x = price)) +
+  geom_density(aes(color = cut))
+
+?cut_number
+smaller <- diamonds %>% 
+  filter(carat < 3)
+
+ggplot(smaller, aes(x = carat, y = price)) +
+  geom_point()
+  
+ggplot(smaller, aes(x = price, y = carat)) + 
+  geom_boxplot(aes(group = cut_width(price, 500)))
+
+ggplot(smaller, aes(x = carat, y = price)) +
+  geom_point() +
+  facet_grid(cut ~ .)
+
+diamonds |> 
+  filter(x >= 4) |> 
+  ggplot(aes(x = x, y = y)) +
+  geom_point() +
+  coord_cartesian(xlim = c(4, 11), ylim = c(4, 11))
+
+ggplot(smaller, aes(x = carat, y = price)) + 
+  geom_boxplot(aes(group = cut_number(carat, 20)))
+
+#### end ####
+
+#### Communication ####
+library(tidyverse)
+library(scales)
+library(ggrepel)
+library(patchwork)
+
+## Labels
+# Exercises
+ggplot(mpg) +
+  geom_point(aes(x = displ, y = hwy, shape = "Highway"), color = "black") +
+  geom_point(aes(x = displ, y = cty, shape = "City"), color = "blue") +
+  labs(
+    x = "Engine displacement (L)",
+    y = "Fuel economy (mpg)",
+    shape = "Road Type",
+    title = "Fuel efficiency generally decreases with engine size",
+    caption = "Data from fueleconomy.gov")
+
+ggplot(mpg, aes(x = cty, y = hwy)) +
+  geom_point(aes(color = drv, shape = drv)) +
+  labs(
+    x = "City (mpg)",
+    y = "Highway (mpg)",
+    shape = "Type of Drive Train",
+    color = "Type of Drive Train"
+  )
+
+#### end ####
+
 
 
 

@@ -38,6 +38,8 @@ This is a document meant to serve as resource for coding with R. It combines my 
   
   The ggplot2 Book: https://ggplot2-book.org/
   
+  GGplot Extensions Gallery: https://exts.ggplot2.tidyverse.org/gallery/
+  
   **Option + Shift + K** => opens up keyboard shortcuts
   
   **Cmd/Ctrl + Shift + 0/F10** =>  restart R
@@ -49,7 +51,7 @@ This is a document meant to serve as resource for coding with R. It combines my 
 
 <br>
 
-## 1. Introduction
+## Introduction
 ### Installing Packages
 
 ```{r eval = F}
@@ -146,7 +148,7 @@ read_rds("students.rds")
 
 <br>
 
-## 2. Tidyverse
+## Tidyverse
 Tidyverse in an amazing package used to write code that is more efficient and concise. Tidyverse relies on the pipe opperator which basically means "and then"
 
 **Pipe Operator = %>%  (shift + CNTL + m), basically means and then**
@@ -163,9 +165,59 @@ starwars %>%
 
 <br>
 
-## 3. Explore
+## Explore
 
-### Data structures and types of variables
+### Asking Questions
+When starting your data analysis you should be asking a lot of questions to help you conduct a thorough analysis. 
+
+<br>
+
+#### Starting
+1. What type of variation occurs within my variables?
+
+2. What type of covariation occurs between my variables?
+
+<br>
+
+#### Typical Values
+1. Which values are the most common? Why?
+
+2. Which values are rare? Why? Does that match your expectations?
+
+3. Can you see any unusual patterns? What might explain them?
+
+<br>
+
+#### Subgroups
+1. How are the observations within each subgroup similar to each other?
+
+2. How are the observations in separate clusters different from each other?
+
+3. How can you explain or describe the clusters?
+
+4. Why might the appearance of clusters be misleading?
+
+<br>
+
+#### Unusual Values
+1. Are there observations that don't fit the patterns of the rest of the data
+
+<br>
+
+#### Patterns
+1. Could this pattern be due to coincidence (i.e. random chance)?
+
+2. How can you describe the relationship implied by the pattern?
+
+3. How strong is the relationship implied by the pattern?
+
+4. What other variables might affect the relationship?
+
+5. Does the relationship change if you look at individual subgroups of the data?
+
+< br>
+
+### Data structures and variables
 
 There are numerous commands that are useful for looking at and viewing data. Here I will provide them and a breift description of what they do:
 
@@ -179,7 +231,7 @@ There are numerous commands that are useful for looking at and viewing data. Her
 
 <br>
 
-### Dealing with missing data
+### Missing data
 Here is a line of code that is good for seeing missing data => **!** inverts data, **complete.cases** gives list of which there is no missing data 
 ```{r eval = F}
 missing <- !complete.cases(msleep)
@@ -188,7 +240,7 @@ msleep[missing,] #list of rows with missing data
 
 <br>
 
-## 4. Clean/Manipulate
+## Clean/Manipulate
 
 The ultimate goal is to create tidy data. There are three interrelated rules that make a dataset tidy:
 
@@ -210,6 +262,7 @@ Why ensure that your data is tidy? There are two main advantages:
 
 ### Manipulating Rows
 
+#### Filter
 ***filter()*** = allows you to keep rows based on the values of the columns
 ```{r eval = F}
 flights %>% 
@@ -230,6 +283,7 @@ flights %>%
 
 <br>
 
+#### Arrange
 ***arrange()*** = changes the order of rows
 ```{r eval = F}
 flights %>% 
@@ -238,6 +292,7 @@ flights %>%
 
 <br>
 
+#### Desc
 ***desc()*** can be added to re-order the df from big to small
 ```{r eval = F}
 flights %>% 
@@ -246,6 +301,7 @@ flights %>%
 
 <br>
 
+#### Distinct
 ***distinct()*** = finds unique rows in a dataset
 ```{r eval = F}
 flights %>% 
@@ -260,6 +316,7 @@ flights %>%
 
 <br>
 
+#### Count
 ***count()*** = used to find number of occurances
 ```{r eval = F}
 flights %>% 
@@ -270,6 +327,7 @@ flights %>%
 
 ### Manipulating Columns
 
+#### Mutate
 ***mutate()*** = add new columns that are calculated from existing columns
 ```{r eval = F}
 flights %>%  
@@ -302,6 +360,7 @@ starwars %>%
 
 <br>
 
+#### Select
 ***select()*** = allows you to select only a part of a dataset
 ```{r eval = F}
 # Select using column names
@@ -332,6 +391,7 @@ flights %>%
 
 <br>
 
+#### Rename
 ***rename()*** = should be used to keep all existing variables and just rename a few
 ```{r eval = F}
 flights %>% 
@@ -340,6 +400,7 @@ flights %>%
 
 <br>
 
+#### Relocate
 ***relocate()*** = used to move variables around
 ```{r eval = F}
 # Move important variables to the front
@@ -358,6 +419,7 @@ flights %>%
 
 ### Manipulating Groups
 
+#### Group_by
 ***group_by()*** = divide data set into groups meaningful for analysis, subsequent outputs work in the group
 ```{r eval = F}
 flights %>%
@@ -366,6 +428,15 @@ flights %>%
 
 <br>
 
+You can ***group_by*** multiple variables
+```{r eval = F}
+daily <- flights %>%  
+  group_by(year, month, day)
+```
+
+<br>
+
+#### Summarize
 ***summarize()*** = presents summary stats, if used with group does one per group
 ```{r eval = F}
 flights %>% 
@@ -378,6 +449,7 @@ flights %>%
 
 <br>
 
+#### Slice
 ***slice_*** = allows you to extract specific rows from groups
 
 | df %>% ***slice_head(n = 1)*** = takes the first row from each group.
@@ -395,19 +467,16 @@ flights %>%
 
 <br>
 
-You can group my multiple variables
-```{r eval = F}
-daily <- flights %>%  
-  group_by(year, month, day)
-```
-
-
+#### Ungroup
 ***ungroup()*** = ungroups the data
 ```{r eval = F}
 daily %>% 
   ungroup()
 ```
 
+<br>
+
+#### .by
 ***.by*** = can be used to group within a single operation
 ```{r eval = F}
 flights %>% 
@@ -427,7 +496,7 @@ flights %>%
 
 <br>
 
-### Changing variable order 
+### Variable Order 
 The select command can also be used to reorder a dataset
 ```{r eval = F}
 starwars %>% 
@@ -436,7 +505,7 @@ starwars %>%
 
 <br>
 
-### Changing factor levels
+### Factor Levels
 Factor levels are used to order categorical variables in useful ways. For example with looking at month data, months wil by default be ordered alphabetically. To change this you can order it using the **mutate** command. See how this is done using sex data:
 ```{r}
 df <- starwars
@@ -452,7 +521,7 @@ levels(df$sex)
 
 <br>
 
-### Dealing with missing data
+### Missing Data
 When working with dataset with missing data you can run into issues:
 ```{r}
 mean(starwars$height) #NA bc of missing data
@@ -480,7 +549,8 @@ starwars %>%
 
 <br>
 
-### Reshape data (pivot wider/longer)
+### Reshape data
+#### Intro
 Sometimes the data we are using is not in the format we want it to be (short vs. long). Take the gapminder data for example:
 ```{r include=FALSE}
 library(gapminder) #great dataset
@@ -495,6 +565,7 @@ head(data)
 
 <br>
 
+#### Pivot_wider
 This data is in long format where each country is represented multiple times in multiple rows. What we can do is using the **pivot_wider** function to change the data. The code below is pulling from the "year" column to make new headers for each year, THEN it is filling those with the values for "lifeExp"
 ```{r}
 wide_data <- data %>% 
@@ -504,6 +575,7 @@ head(wide_data)
 
 <br>
 
+#### Pivot_longer
 This code uses the **pivot_longer** function to reverse what was done
 ```{r}
 long_data <- wide_data %>% 
@@ -515,7 +587,7 @@ view(long_data)
 
 <br>
 
-## 5. Describe
+## Describe
 ### Summary stats
 Summary statistics can be individually generated, generated all at once, or generates for multiple varibles using a few simple commands:
 ```{r eval = F}
@@ -563,9 +635,9 @@ msleep %>%
 
 <br>
 
-## 6. Visualize
+## Visualize
 
-### The grammar of graphics
+### The Grammar of Graphics
 In order to make graphs we need to understand what we are talking about
 
     Data => what data are you using
@@ -573,7 +645,16 @@ In order to make graphs we need to understand what we are talking about
     Geometry => line, bar chart, histograms, etc.
 <br>
 
-##### Here I provide code to different graph types. The code gets increasily complex and can be used to develop your own figures:
+##### Here I provide code to different graph types. The code gets increasily complex and can be used to develop your own figures, but here is an overall template for making graphs
+
+ggplot(data = <DATA>) + 
+  <GEOM_FUNCTION>(
+     mapping = aes(<MAPPINGS>),
+     stat = <STAT>, 
+     position = <POSITION>
+  ) +
+  <COORDINATE_FUNCTION> +
+  <FACET_FUNCTION>
 
 <br>
 
@@ -665,7 +746,7 @@ starwars %>%
 
 <br>
 
-## 7. Analyze
+## Analyze
 ##### The following are examples of code used to run hypothsis tests
 
 <br>
@@ -757,5 +838,8 @@ The variables to pay attention to are: Y-intercept, Slope, p value, R2
 <br>
 <br>
 <br>
+
+
+
 
 
